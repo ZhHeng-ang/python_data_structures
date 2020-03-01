@@ -2,16 +2,6 @@
 
 {% block content %}
 <p>{{ ariticles|length }} Titles</p>
-{# 表单 #}
-{% if current_user.is_authenticated %}
-<form method="POST">
-    博文名 <input type="text" name="title" autocomplete="off" required>
-    作者 <input type="text" name="author" autocomplete="off" required>
-    上传时间 <input type="text" name="pubdate" autocomplete="off" required>
-    文章 <input type="text" name="content" autocomplete="off" required>
-    <input type="submit" class="btn" name="submit" value="添加">
-</form>
-{% endif %}
 <ul class="movie-list">
     {% for ariticle in ariticles %}
     <li>

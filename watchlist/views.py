@@ -8,26 +8,6 @@ from watchlist.models import User,Ariticles
 # 首页
 @app.route('/',methods=['GET','POST'])
 def index():
-    if request.method == 'POST':
-        if not current_user.is_authenticated:
-            return redirect(url_for('index'))
-        # 获取表单的数据
-        title = request.form.get('title')
-        author = request.form.get('author')
-        pubdate = request.form.get('pubdate')
-        content = request.form.get('content')
-
-        # 验证不为空
-        if not title or not author or not pubdate or not content or len(author)>6 or len(title)>60:
-            flash('输入错误')  # 错误提示
-            return redirect(url_for('index'))  # 重定向回主页
-        
-        ariticle = Ariticles(title=title,author=author,pubdate=pubdate,content=content)  # 创建记录
-        db.session.add(ariticle)  # 添加到数据库会话
-        db.session.commit()   # 提交数据库会话
-        flash('数据创建成功')
-        return redirect(url_for('index'))
-
     ariticles = Ariticles.query.all()
     return render_template('index.html',ariticles=ariticles)
 # 编辑电影信息页面
@@ -111,3 +91,25 @@ def logout():
     logout_user()
     flash('退出登录')
     return redirect(url_for('index'))
+@app.route('/add',methods=['GET','POST'])
+def add():
+    if request.method == 'POST':
+        if not current_user.is_authenticated:
+            return redirect(url_for('index'))
+        # 获取表单的数据
+        title = request.form.get('title')
+        author = request.form.get('author')
+        pubdate = request.form.get('pubdate')
+        content = request.form.get('content')
+
+        # 验证不为空
+        if not title or not author or not pubdate or not content or len(author)>6 or len(title)>60:
+            flash('输入错误')  # 错误提示
+            return redirect(url_for('index'))  # 重定向回主页
+        
+        ariticle = Ariticles(title=title,author=author,pubdate=pubdate,content=content)  # 创建记录
+        db.session.add(ariticle)  # 添加到数据库会话
+        db.session.commit()   # 提交数据库会话
+        flash('数据创建成功')
+        return redirect(url_for('index'))
+    return render_template('add.html')
