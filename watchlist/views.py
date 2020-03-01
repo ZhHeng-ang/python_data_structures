@@ -1,7 +1,10 @@
+import time
+data_time=(time.strftime("%Y-%m-%d", time.localtime()))
+
 from watchlist import app,db
 from flask import request,redirect,url_for,flash,render_template
 from flask_login import login_user,logout_user,login_required,current_user
-from watchlist.models import User,Movie
+from watchlist.models import User,Ariticles
 # 首页
 @app.route('/',methods=['GET','POST'])
 def index():
@@ -10,41 +13,50 @@ def index():
             return redirect(url_for('index'))
         # 获取表单的数据
         title = request.form.get('title')
-        year = request.form.get('year')
+        author = request.form.get('author')
+        pubdate = request.form.get('pubdate')
+        content = request.form.get('content')
 
-        # 验证title，year不为空，并且title长度不大于60，year的长度不大于4
-        if not title or not year or len(year)>4 or len(title)>60:
+        # 验证不为空
+        if not title or not author or not pubdate or not content or len(author)>6 or len(title)>60:
             flash('输入错误')  # 错误提示
             return redirect(url_for('index'))  # 重定向回主页
         
-        movie = Movie(title=title,year=year)  # 创建记录
-        db.session.add(movie)  # 添加到数据库会话
+        ariticle = Ariticles(title=title,author=author,pubdate=pubdate,content=content)  # 创建记录
+        db.session.add(ariticle)  # 添加到数据库会话
         db.session.commit()   # 提交数据库会话
         flash('数据创建成功')
         return redirect(url_for('index'))
 
-    movies = Movie.query.all()
-    return render_template('index.html',movies=movies)
+    ariticles = Ariticles.query.all()
+    return render_template('index.html',ariticles=ariticles)
 # 编辑电影信息页面
-@app.route('/movie/edit/<int:movie_id>',methods=['GET','POST'])
+@app.route('/ariticle/edit/<int:ariticles_id>',methods=['GET','POST'])
 @login_required
-def edit(movie_id):
-    movie = Movie.query.get_or_404(movie_id)
+def edit(ariticles_id):
+    ariticle = Ariticles.query.get_or_404(ariticles_id)
 
     if request.method == 'POST':
         title = request.form['title']
-        year = request.form['year']
+        author = request.form['author']
+        pubdate = request.form['pubdate']
+        content = request.form['content']
 
-        if not title or not year or len(year)>4 or len(title)>60:
+        if not title or not author:
             flash('输入错误')
-            return redirect(url_for('edit'),movie_id=movie_id)
+            return redirect(url_for('edit'),ariticles_id=ariticles_id)
         
-        movie.title = title
-        movie.year = year
+        ariticle.title = title
+        ariticle.author = author
+        ariticle.pubdate = pubdate
+        content_ = request.form.get('content')
+        content_2 = content_.replace('<p>', '')
+        content = content_2.replace('</p>', '')
+        ariticle.content = content
         db.session.commit()
         flash('电影信息已经更新')
         return redirect(url_for('index'))
-    return render_template('edit.html',movie=movie)
+    return render_template('edit.html',ariticle=ariticle)
 
 @app.route('/settings',methods=['GET','POST'])
 @login_required
@@ -64,11 +76,11 @@ def settings():
     return render_template('settings.html')
 
 # 删除信息
-@app.route('/movie/delete/<int:movie_id>',methods=['POST'])
+@app.route('/ariticle/delete/<int:ariticles_id>',methods=['POST'])
 @login_required    
-def delete(movie_id):
-    movie = Movie.query.get_or_404(movie_id)
-    db.session.delete(movie)
+def delete(ariticles_id):
+    ariticle = Ariticles.query.get_or_404(ariticles_id)
+    db.session.delete(ariticle)
     db.session.commit()
     flash('删除数据成功')
     return redirect(url_for('index'))

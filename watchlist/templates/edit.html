@@ -1,9 +1,14 @@
 {% extends 'base.html' %}
 {% block content %}
-    <h3>电影编辑页面</h3>
+    <h3>博文编辑页面</h3>
+
     <form action="" method="post">
-        电影名 <input type="text" name="title" autocomplete="off" required>
-        年份   <input type="text" name="year" autocomplete="off" required>
+        博文名   <input type="text" name="title" autocomplete="off" value="{{ ariticle.title }}" required>
+        作者名   <input type="text" name="author" autocomplete="off" value="{{ ariticle.author }}" required>
+        上传时间 <input type="text" name="pubdate" autocomplete="off" value="{{ ariticle.pubdate }}" required>
+        文章内容 <input type="text" name="content" autocomplete="off" id="content" value="{{ ariticle.content }}" required>
         <input type="submit" class="btn" name="submit" value="更新">
     </form>
+
 {% endblock %}
+

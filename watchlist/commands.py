@@ -1,7 +1,6 @@
 import click
 from watchlist import app,db
-from watchlist.models import User,Movie
-
+from watchlist.models import User,Ariticles
 
 # 自定义initdb
 @app.cli.command()
@@ -17,23 +16,18 @@ def initdb(drop):
 def forge():
     db.create_all()
     name = "Bruce"
-    movies = [
-        {'title':'杀破狼','year':'2003'},
-        {'title':'扫毒','year':'2018'},
-        {'title':'捉妖记','year':'2016'},
-        {'title':'囧妈','year':'2020'},
-        {'title':'葫芦娃','year':'1989'},
-        {'title':'玻璃盒子','year':'2020'},
-        {'title':'调酒师','year':'2020'},
-        {'title':'釜山行','year':'2017'},
-        {'title':'导火索','year':'2005'},
-        {'title':'叶问','year':'2015'}
+    ariticles = [
+        {'title':'张恒家','author':'张恒','pubdate':'2020.03.01','content':'张恒牛皮'},
+        {'title':'2','author':'2','pubdate':'2','content':'2'},
+        {'title':'3','author':'3','pubdate':'3','content':'3'},
+        {'title':'4','author':'4','pubdate':'4','content':'4'},
+        {'title':'5','author':'5','pubdate':'5','content':'5'}
     ]
     user = User(name=name)
     db.session.add(user)
-    for m in movies:
-        movie = Movie(title=m['title'],year=m['year'])
-        db.session.add(movie)
+    for m in ariticles:
+        ariticle = Ariticles(title=m['title'],author=m['author'],pubdate=m['pubdate'],content=m['content'])
+        db.session.add(ariticle)
     db.session.commit()
     click.echo('数据导入完成')
 
